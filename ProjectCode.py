@@ -118,3 +118,6 @@ class TextSummarization:
       summary = heapq.nlargest(round(0.10*len(sentences)), sent_score, key=sent_score.get)
       strx=""
       return (strx.join(summary))
+
+ts=TextSummarization(url='https://en.wikipedia.org/wiki/20th_century')
+print(ts.generate_summary())
