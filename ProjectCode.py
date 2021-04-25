@@ -82,6 +82,12 @@ class TextSummarization:
 
       return word_count
 
+    def calc_word_weighted_freq(self, word_count):
+      weighted_word_count=word_count
+      for key in word_count.keys():
+        weighted_word_count[key] = word_count[key] / max(word_count.values())  
+      return weighted_word_count
+
 
     def tokenize_sentences(self, text):
      sentences= re.split(r'(?<=[^A-Z].[.?]) +(?=[A-Z])', text)
@@ -99,15 +105,16 @@ class TextSummarization:
                           sent_score[sentence] += word_count[word]
       return sent_score
 
+  
+
     def generate_summary(self):
       text=self.read_text_url(self.url)
       text=self.prePro(text)
       word_count=self.tokenize_words(text)
       sentences=self.tokenize_sentences(text)
-      sent_score=self.calc_sentence_scores(sentences,word_count) 
+      weighted_word_count=self.calc_word_weighted_freq(word_count)
+      sent_score=self.calc_sentence_scores(sentences,weighted_word_count) 
+ 
       summary = heapq.nlargest(round(0.10*len(sentences)), sent_score, key=sent_score.get)
       strx=""
       return (strx.join(summary))
-
-ts=TextSummarization(url='https://en.wikipedia.org/wiki/Data_science#:~:text=Data%20science%20is%20the%20study,analyze%20actual%20phenomena%22%20with%20data.)')
-print(ts.generate_summary())
